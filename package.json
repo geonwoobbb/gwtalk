@@ -7,7 +7,9 @@
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.2.0",
         "@testing-library/user-event": "^13.5.0",
+        "axios": "^1.8.1",
         "bootstrap": "^5.3.3",
+        "cors": "^2.8.5",
         "mysql2": "^3.12.0",
         "react": "18.2.0",
         "react-bootstrap": "^2.10.9",
@@ -16,13 +18,16 @@
         "react-scripts": "5.0.1",
         "web-vitals": "^2.1.4"
     },
+    "proxy": "http://localhost:5000",
     "main": "src/main.js",
     "scripts": {
-        "start": "concurrently \"yarn react-scripts start\" \"yarn electron\" ",
+        "start": "concurrently \"yarn start-react\" \"yarn electron\" \"yarn server\"",
+        "start-react": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "electron": "electron ."
+        "electron": "electron .",
+        "server": "node src/server/index.js"
     },
     "eslintConfig": {
         "extends": [

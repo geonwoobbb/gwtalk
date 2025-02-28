@@ -4,6 +4,7 @@ import Chat from './pages/Chat';
 import Main from './pages/Main';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import UserList from './pages/UserList';
 
 function App() {
     return (
@@ -15,6 +16,8 @@ function App() {
                 <Route path="/Profile" element={<Profile />} />
                 <Route path="/Main" element={<Main />} />
                 <Route path="/Login" element={<Login />} />
+                <Route path="/users" element={<UserList />} />
+                <Route path="*" element={<h1>404 - 페이지를 찾을 수 없습니다.</h1>} />
             </Routes>
         </BrowserRouter>
     );
