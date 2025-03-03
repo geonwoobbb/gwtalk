@@ -16,6 +16,7 @@ const Login = () => {
             .post('/api/login', { userid, password })
             .then((Response) => {
                 if (Response.data.success) {
+                    console.log('로그인 성공!', Response.data.user);
                     navigate('/Main');
                 } else {
                     setError('아이디 또는 비밀번호가 틀렸습니다. 다시하세요 ^^');

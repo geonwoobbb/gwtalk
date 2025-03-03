@@ -6,6 +6,8 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import UserList from './pages/UserList';
 import Signup from './pages/Singup';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
     return (
@@ -24,4 +26,5 @@ function App() {
         </BrowserRouter>
     );
 }
+
 export default App;

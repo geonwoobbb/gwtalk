@@ -1,12 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const db = require('../database/db.js'); // MySQL 연결 설정 불러오기
+const session = require('express-session');
 
 const app = express();
 app.use(
     cors({
         origin: 'http://localhost:3000',
         credentials: true,
+    }),
+    session({
+        secret: 'mySecretKey',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false },
     })
 ); // CORS 해결
 app.use(express.json());
@@ -26,27 +33,34 @@ app.get('/api/users', (req, res) => {
 });
 
 // 로그인 인증 API
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { userid, password } = req.body;
-    //유저 db에 존재하는지 확인
-    const sql = 'SELECT * FROM user WHERE LOWER(userid) = LOWER(?); ';
-    db.query(sql, [userid], (err, results) => {
-        if (err) {
-            console.error('쿼리 오류:', err);
-            return res.status(500).json({ success: false, message: '서버 오류' });
-        }
-        // db에 해당 username이 없을때
+
+    try {
+        const [results] = await db.promise().query('SELECT * FROM user WHERE LOWER(userid) = LOWER(?);', [userid]);
         if (results.length === 0) {
-            return res.json({ success: false, message: '아이디 또는 비번이 틀렸습니다.' });
+            return res.json({ success: false, message: '아이디 또는 비밀번호가 틀렸습니다.' });
         }
+
         const dbpassword = results[0].password;
 
+        //  비밀번호가 일치하는지 확인
         if (dbpassword === password) {
-            return res.json({ success: true });
+            // 세션에 유저 정보 저장
+            req.session.user = { userid };
+
+            console.log('로그인 성공 - 세션 저장됨:', req.session.user);
+
+            req.session.save(() => {
+                res.json({ success: true, message: '로그인 성공!', user: req.session.user });
+            });
         } else {
-            return res.json({ success: false, message: '아이디 또는 비번이 틀렸습니다.' });
+            return res.json({ success: false, message: '아이디 또는 비밀번호가 틀렸습니다.' });
         }
-    });
+    } catch (err) {
+        console.error('로그인 오류:', err);
+        return res.status(500).json({ success: false, message: '서버 오류' });
+    }
 });
 
 // 회원가입 API
@@ -78,6 +92,14 @@ app.post('/api/signup', async (req, res) => {
     } catch (err) {
         console.error('회원가입 오류:', err);
         return res.status(500).json({ success: false, message: '서버 오류' });
+    }
+});
+
+app.get('/api/session', (req, res) => {
+    if (req.session.user) {
+        res.json({ loggedIn: true, user: req.session.user });
+    } else {
+        res.json({ loggedIn: false });
     }
 });
 
