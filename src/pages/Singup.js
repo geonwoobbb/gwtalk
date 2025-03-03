@@ -5,24 +5,31 @@ import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();
-    const [userid, SetUserid] = useState('');
+    const [userid, Setuserid] = useState('');
     const [password, SetPassword] = useState('');
+    const [confirmpassword, Setconfirmpassword] = useState('');
+    const [nickname, Setnickname] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (password !== confirmpassword) {
+            setError('비밀번호가 일치하지 않습니다 다시 확인하세요.');
+            return;
+        }
+
         axios
-            .post('/api/login', { userid, password })
+            .post('/api/signup', { userid, password, nickname })
             .then((Response) => {
                 if (Response.data.success) {
-                    navigate('/Main');
+                    navigate('/Login');
                 } else {
-                    setError('아이디 또는 비밀번호가 틀렸습니다. 다시하세요 ^^');
+                    setError('id나 닉네임이 중복됩니다.');
                 }
             })
             .catch((error) => {
-                console.error('로그인 오류:', error);
+                console.error('회원가입 오류:', error);
                 setError('서버 오류가 발생했습니다.');
             });
     };
@@ -33,12 +40,12 @@ const Login = () => {
 
             <ul className="links">
                 <li>
-                    <Link to="/Login" id="signin">
+                    <Link to="/Login" id="Login">
                         로그인
                     </Link>
                 </li>
                 <li>
-                    <Link to="/Signup" id="signup">
+                    <Link to="/Signup" id="Signup">
                         회원가입
                     </Link>
                 </li>
@@ -52,7 +59,7 @@ const Login = () => {
                         className="input"
                         id="userid"
                         value={userid}
-                        onChange={(e) => SetUserid(e.target.value)}
+                        onChange={(e) => Setuserid(e.target.value)}
                         required
                     />
                 </div>
@@ -69,8 +76,32 @@ const Login = () => {
                     />
                 </div>
 
+                <div className="input__block">
+                    <input
+                        type="password"
+                        placeholder="비밀번호 확인"
+                        className="input"
+                        id="confirmpassword"
+                        value={confirmpassword}
+                        onChange={(e) => Setconfirmpassword(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="input__block">
+                    <input
+                        type="nickname"
+                        placeholder="닉네임"
+                        className="input"
+                        id="nickname"
+                        value={nickname}
+                        onChange={(e) => Setnickname(e.target.value)}
+                        required
+                    />
+                </div>
+
                 <button type="submit" className="signin__btn">
-                    로그인
+                    회원가입
                 </button>
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}

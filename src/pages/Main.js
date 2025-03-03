@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function Main() {
     return (
         <div className="buttondistance">
-            <Link to={'/Start'}>
+            <Link to={'/Login'}>
                 <button className="button1">뒤로가기</button>
             </Link>
         </div>
