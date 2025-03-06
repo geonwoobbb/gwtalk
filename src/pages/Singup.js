@@ -15,7 +15,7 @@ const Login = () => {
         e.preventDefault();
 
         if (password !== confirmpassword) {
-            setError('비밀번호가 일치하지 않습니다 다시 확인하세요.');
+            alert('비밀번호가 일치하지 않습니다. 다시 입력하세요.');
             return;
         }
 
@@ -25,12 +25,12 @@ const Login = () => {
                 if (Response.data.success) {
                     navigate('/Login');
                 } else {
-                    setError('id나 닉네임이 중복됩니다.');
+                    alert(Response.data.message);
                 }
             })
             .catch((error) => {
                 console.error('회원가입 오류:', error);
-                setError('서버 오류가 발생했습니다.');
+                alert('서버 오류가 발생했습니다.');
             });
     };
 
